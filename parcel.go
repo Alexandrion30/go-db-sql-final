@@ -12,19 +12,10 @@ func NewParcelStore(db *sql.DB) ParcelStore {
 	return ParcelStore{db: db}
 }
 
-var numberId = 0
-
-func incrementId() int {
-	numberId = numberId + 1
-
-	return numberId
-}
-
 func (s ParcelStore) Add(p *Parcel) (int, error) {
-	p.Number = incrementId()
+
 	// реализуйте добавление строки в таблицу parcel, используйте данные из переменной p
-	res, err := s.db.Exec("INSERT INTO parcel (number, client, status, address, created_at) VALUES (:number, :client, :status, :address, :created_at)",
-		sql.Named("number", p.Number),
+	res, err := s.db.Exec("INSERT INTO parcel (client, status, address, created_at) VALUES (:client, :status, :address, :created_at)",
 		sql.Named("client", p.Client),
 		sql.Named("status", p.Status),
 		sql.Named("address", p.Address),
@@ -40,6 +31,7 @@ func (s ParcelStore) Add(p *Parcel) (int, error) {
 	}
 
 	// верните идентификатор последней добавленной записи
+	p.Number = int(id)
 	return int(id), nil
 
 }
@@ -81,7 +73,7 @@ func (s ParcelStore) GetByClient(client int) ([]Parcel, error) {
 
 	if err := row.Err(); err != nil {
 		// Обработка ошибки
-		return res, nil
+		return nil, nil
 	}
 	return res, nil
 }
