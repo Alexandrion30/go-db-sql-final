@@ -38,7 +38,7 @@ func (s ParcelService) Register(client int, address string) (Parcel, error) {
 		CreatedAt: time.Now().UTC().Format(time.RFC3339),
 	}
 
-	id, err := s.store.Add(parcel)
+	id, err := s.store.Add(&parcel)
 	if err != nil {
 		return parcel, err
 	}
@@ -97,9 +97,16 @@ func (s ParcelService) Delete(number int) error {
 }
 
 func main() {
-	// настройте подключение к БД
 
-	store := // создайте объект ParcelStore функцией NewParcelStore
+	db, err := sql.Open("sqlite", "tracker.db") // настройте подключение к БД
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	store := NewParcelStore(db) // создайте объект ParcelStore функцией NewParcelStore
 	service := NewParcelService(store)
 
 	// регистрация посылки
@@ -110,7 +117,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	// изменение адреса
 	newAddress := "Саратов, д. Верхние Зори, ул. Козлова, д. 25"
 	err = service.ChangeAddress(p.Number, newAddress)
@@ -118,7 +124,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	// изменение статуса
 	err = service.NextStatus(p.Number)
 	if err != nil {
