@@ -1,5 +1,6 @@
 package main
 
+// tests ok
 import (
 	"database/sql"
 	"fmt"
