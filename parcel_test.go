@@ -40,7 +40,8 @@ func TestAddGetDelete(t *testing.T) {
 
 	// add
 	// добавьте новую посылку в БД, убедитесь в отсутствии ошибки и наличии идентификатора
-	id, err := store.Add(&parcel)
+	id, err := store.Add(parcel)
+	parcel.Number = id
 	require.NoError(t, err)
 	require.NotZero(t, id)
 
@@ -70,7 +71,7 @@ func TestSetAddress(t *testing.T) {
 	parcel := getTestParcel()
 	// add
 	// добавьте новую посылку в БД, убедитесь в отсутствии ошибки и наличии идентификатора
-	id, err := store.Add(&parcel)
+	id, err := store.Add(parcel)
 	require.NoError(t, err)
 	require.NotZero(t, id)
 	// set address
@@ -94,7 +95,7 @@ func TestSetStatus(t *testing.T) {
 	parcel := getTestParcel()
 	// add
 	// добавьте новую посылку в БД, убедитесь в отсутствии ошибки и наличии идентификатора
-	id, err := store.Add(&parcel)
+	id, err := store.Add(parcel)
 	require.NoError(t, err)
 	require.NotZero(t, id)
 	// set status
@@ -131,7 +132,7 @@ func TestGetByClient(t *testing.T) {
 
 	// add
 	for i := 0; i < len(parcels); i++ {
-		id, err := store.Add(&parcels[i])
+		id, err := store.Add(parcels[i])
 		require.NoError(t, err)
 
 		// обновляем идентификатор добавленной у посылки
